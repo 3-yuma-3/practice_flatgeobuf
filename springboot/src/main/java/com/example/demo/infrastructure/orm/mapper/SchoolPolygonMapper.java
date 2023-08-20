@@ -11,4 +11,6 @@ public interface SchoolPolygonMapper {
     void insertList(@Param("polygonList") List<SchoolPolygonOrmEntity> polygonList);
 
     List<SchoolPolygonOrmEntity> selectListByUlidList(@Param("ulidList") List<String> ulidList);
+
+    List<SchoolPolygonOrmEntity> selectList();
 }

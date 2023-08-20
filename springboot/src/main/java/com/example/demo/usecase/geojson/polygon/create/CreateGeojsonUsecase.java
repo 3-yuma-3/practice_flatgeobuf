@@ -33,6 +33,7 @@ public class CreateGeojsonUsecase {
         schoolRepository.insertList(schoolList);
 
         List<Ulid> ulidList = schoolList.stream().map(School::getUlid).toList();
+        // TODO: 空配列で返ってくる
         List<School> savedSchoolList = schoolRepository.selectListByUlidList(ulidList);
 
         return savedSchoolList;

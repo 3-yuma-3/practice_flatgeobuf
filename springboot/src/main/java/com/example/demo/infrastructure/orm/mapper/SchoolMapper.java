@@ -13,4 +13,6 @@ public interface SchoolMapper {
     List<SchoolOrmEntity> selectListByUlidList(
         @Param("ulidList") List<String> ulidList
     );
+
+    List<SchoolOrmEntity> selectList();
 }

@@ -23,8 +23,8 @@
         resultType="com.example.demo.infrastructure.orm.entity.SchoolPolygonOrmEntity"
     >
         SELECT
-            school_ulid,
-            coordinate_list
+            school_ulid AS schoolUlid,
+            coordinate_list AS coordinateList
         FROM
             school_polygon
         WHERE
@@ -32,5 +32,15 @@
                 <foreach item="schoolUlid" collection="ulidList" open="(" separator="," close=")">
                     #{schoolUlid}
                 </foreach>
+    </select>
+    <select
+        id="selectList"
+        resultType="com.example.demo.infrastructure.orm.entity.SchoolPolygonOrmEntity"
+    >
+        SELECT
+            school_ulid AS schoolUlid,
+            coordinate_list AS coordinateList
+        FROM
+            school_polygon
     </select>
 </mapper>

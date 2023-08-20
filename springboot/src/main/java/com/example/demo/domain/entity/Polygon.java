@@ -1,7 +1,5 @@
 package com.example.demo.domain.entity;
 
-import com.example.demo.domain.entity.Coordinate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

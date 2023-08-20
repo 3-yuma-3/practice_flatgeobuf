@@ -33,3 +33,16 @@
 ### `A27-21_53_GML_split_geojson_CRS84`
 
 - `ruby-scripts` で `geometry.type (polygon, multipolygon, ...)` でpolygonでだけ抜き出す
+
+## `fude_tsukuba`
+
+- flatgeobufをダウンロードしてきて中身を見てみる
+  - [FlatGeobuf本当にすごい！ (2022/12/08) (qiita)](https://qiita.com/wata909/items/d1c443e5c8363cb33179)
+- `fude_tsukuba.fgb`
+  - サイトからダウンロードしてきたflatgeobufファイル
+- `fude_tsukuba.geojson`, `fude_tsukuba.qmd`
+  - qgisでflatgeobufファイルをgeojsonに変換した後のファイル
+- `fude_tsukuba_1.json`
+  - `fude_tsukuba.geojson` から 地物を1つだけ抜き出したgeojson
+
+

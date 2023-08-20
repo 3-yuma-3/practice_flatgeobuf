@@ -9,4 +9,6 @@ public interface SchoolRepository {
     void insertList(List<School> schooleList);
 
     List<School> selectListByUlidList(List<Ulid> ulidList);
+
+    List<School> selectList();
 }

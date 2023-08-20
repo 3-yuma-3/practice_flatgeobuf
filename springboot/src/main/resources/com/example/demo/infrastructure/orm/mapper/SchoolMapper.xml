@@ -32,8 +32,8 @@
     >
         SELECT
             ulid,
-            administrative_area_code,
-            established_by,
+            administrative_area_code AS administrativeAreaCode,
+            established_by AS establishedBy,
             code,
             name,
             address
@@ -44,5 +44,19 @@
                 <foreach item="ulid" collection="ulidList" open="(" separator="," close=")">
                     #{ulid}
                 </foreach>
+    </select>
+    <select
+        id="selectList"
+        resultType="com.example.demo.infrastructure.orm.entity.SchoolOrmEntity"
+    >
+        SELECT
+            ulid,
+            administrative_area_code AS administrativeAreaCode,
+            established_by AS establishedBy,
+            code,
+            name,
+            address
+        FROM
+            schools
     </select>
 </mapper>

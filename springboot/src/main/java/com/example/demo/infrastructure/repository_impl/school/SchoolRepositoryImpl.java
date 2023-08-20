@@ -44,6 +44,16 @@ public class SchoolRepositoryImpl implements SchoolRepository {
         return generateEntityListFromOrmEntity(schoolOrmEntityList, schoolPolygonOrmEntities);
     }
 
+    @Override
+    public List<School> selectList() {
+        List<SchoolOrmEntity> schoolOrmEntityList =
+            schoolMapper.selectList();
+        List<SchoolPolygonOrmEntity> schoolPolygonOrmEntityList =
+            schoolPolygonMapper.selectList();
+
+        return generateEntityListFromOrmEntity(schoolOrmEntityList, schoolPolygonOrmEntityList);
+    }
+
     private List<School> generateEntityListFromOrmEntity(
         List<SchoolOrmEntity> schoolOrmEntityList,
         List<SchoolPolygonOrmEntity> schoolPolygonOrmEntityList

@@ -18,6 +18,8 @@ configurations {
 }
 
 repositories {
+    // geotools を使えるようにするため
+    maven { url "https://repo.osgeo.org/repository/release" }
     mavenCentral()
 }
 
@@ -37,6 +39,15 @@ dependencies {
 
     // https://mvnrepository.com/artifact/de.huxhorn.sulky/de.huxhorn.sulky.ulid
     implementation group: 'de.huxhorn.sulky', name: 'de.huxhorn.sulky.ulid', version: '8.3.0'
+
+    // https://mvnrepository.com/artifact/org.geotools/gt-flatgeobuf
+    implementation group: 'org.geotools', name: 'gt-flatgeobuf', version: '29.2'
+
+    // https://mvnrepository.com/artifact/org.geotools/gt-main
+//    implementation group: 'org.geotools', name: 'gt-main', version: '29.2'
+
+    // https://mvnrepository.com/artifact/org.wololo/flatgeobuf
+//    implementation group: 'org.wololo', name: 'flatgeobuf', version: '3.26.1'
 }
 
 tasks.named('test') {
