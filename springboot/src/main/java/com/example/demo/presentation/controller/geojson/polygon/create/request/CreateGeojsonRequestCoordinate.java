@@ -1,12 +1,12 @@
-package com.example.demo.presentation.controller.geojson.create.request;
+package com.example.demo.presentation.controller.geojson.polygon.create.request;
 
-import com.example.demo.usecase.geojson.create.CreateGeojsonInputCoordinate;
+import com.example.demo.usecase.geojson.polygon.create.CreateGeojsonInputCoordinate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * CRS84: 経度(longitude), 緯度(latitude の並び
+ * CRS84: 経度(longitude), 緯度(latitude) の並び
  */
 @AllArgsConstructor
 @NoArgsConstructor

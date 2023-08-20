@@ -1,4 +1,4 @@
-package com.example.demo.usecase.geojson.create;
+package com.example.demo.usecase.geojson.polygon.create;
 
 import com.example.demo.domain.entity.Coordinate;
 import com.example.demo.domain.entity.Polygon;

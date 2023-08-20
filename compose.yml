@@ -1,15 +1,18 @@
 version: '3.9'
 services:
   mysql:
-    image: mysql:8.0.34
+    platform: linux/amd64
+    image: mysql:8.0.33
     container_name: mysql
-    user: "${UID}:${GID}"
+    # user: "${UID}:${GID}"
+    user: mysql
     environment:
       - MYSQL_DATABASE=practice_flatgeobuf
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
     volumes:
-      - ./data/mysql_data:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d/my.cnf
     ports:
       - "3306:3306"

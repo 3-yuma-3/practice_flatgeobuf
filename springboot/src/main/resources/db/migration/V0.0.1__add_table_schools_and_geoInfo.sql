@@ -3,7 +3,7 @@ CREATE TABLE schools (
     ulid varchar(255) NOT NULL
     , administrative_area_code varchar(255) NOT NULL comment '行政区域コード'
     , established_by varchar(255) NOT NULL comment '設置主体'
-    , code varchar(255) NOT NULL comment '学校コード'
+    , code varchar(255) comment '学校コード'
     , name varchar(255) NOT NULL comment '名称'
     , address varchar(255) NOT NULL comment '所在地'
     , PRIMARY KEY (ulid)

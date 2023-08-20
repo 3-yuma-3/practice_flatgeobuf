@@ -1,4 +1,4 @@
-package com.example.demo.presentation.controller.geojson.create.request;
+package com.example.demo.presentation.controller.geojson.polygon.create.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
