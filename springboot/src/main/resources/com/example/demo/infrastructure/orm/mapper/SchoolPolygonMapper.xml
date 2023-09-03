@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.infrastructure.orm.mapper.SchoolPolygonMapper">
+    <insert
+        id="insertList"
+        parameterType="com.example.demo.infrastructure.orm.entity.SchoolPolygonOrmEntity"
+    >
+        INSERT INTO school_polygon (
+            school_ulid,
+            coordinate_list
+        ) VALUES
+            <foreach collection="polygonList" item="item" separator=",">
+                (
+                    #{item.schoolUlid}
+                    , #{item.coordinateList}
+                )
+            </foreach>
+    </insert>
+    <select
+        id="selectListByUlidList"
+        resultType="com.example.demo.infrastructure.orm.entity.SchoolPolygonOrmEntity"
+    >
+        SELECT
+            school_ulid AS schoolUlid,
+            coordinate_list AS coordinateList
+        FROM
+            school_polygon
+        WHERE
+            school_ulid IN
+                <foreach item="schoolUlid" collection="ulidList" open="(" separator="," close=")">
+                    #{schoolUlid}
+                </foreach>
+    </select>
+    <select
+        id="selectList"
+        resultType="com.example.demo.infrastructure.orm.entity.SchoolPolygonOrmEntity"
+    >
+        SELECT
+            school_ulid AS schoolUlid,
+            coordinate_list AS coordinateList
+        FROM
+            school_polygon
+    </select>
+</mapper>
