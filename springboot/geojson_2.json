@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "A27_001": "08542",
+        "A27_002": "五霞町立",
+        "A27_003": "B108254200026",
+        "A27_004": "五霞西小学校",
+        "A27_005": "猿島郡五霞町元栗橋1072"
+      },
+      "geometry": null,
+      "id": "fid"
+    }

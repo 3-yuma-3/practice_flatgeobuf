@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+      "type": "Feature",
+      "properties": {
+        "hogehoge": "fugafuga"
+      },
+      "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                59.0625, 57.704147
+              ],
+              [
+                37.617187, 24.527135
+              ],
+              [
+                98.789062, 36.031332
+              ],
+              [
+                59.062499, 57.704147
+              ],
+              [
+                59.0625, 57.704147
+              ]
+            ]
+          ]
+      }
+  }]
+}

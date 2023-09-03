@@ -2,31 +2,28 @@ package com.example.demo.usecase.flatgeobuf.polygon.list;
 
 import com.example.demo.domain.entity.school.School;
 import com.example.demo.domain.repository.school.SchoolRepository;
-import com.google.flatbuffers.FlatBufferBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
+import org.geotools.data.flatgeobuf.FeatureCollectionConversions;
+import org.geotools.data.flatgeobuf.FlatGeobufDataStoreFactory;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.FactoryException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wololo.flatgeobuf.GeometryConversions;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,92 +36,94 @@ public class ListFlatGeobufPolygonUsecase {
 
     @Transactional
     public List<School> getList() {
-        List<School> geojsonPolygonList = schoolRepository.selectList();
-        return geojsonPolygonList;
+        List<School> schoolList = schoolRepository.selectList();
+
+        return schoolList;
     }
 
-    public ByteBuffer write() {
-        String wkt = """
-                POLYGON ((
-                    35.68267129314724 139.76617346908193, 35.68084840242705 139.7653295722163,
-                    35.68029849666601 139.76797248631905, 35.68197072504614 139.76855677343286,
-                    35.68267129314724 139.76617346908193
-                ))
-            """;
-        WKTReader reader = new WKTReader();
-        Geometry geometry;
-        try {
-            geometry = reader.read(wkt);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        byte geometryType = GeometryConversions.toGeometryType(geometry.getClass());
-        FlatBufferBuilder builder = new FlatBufferBuilder(1024);
-        int gometryOffset;
-        try {
-            gometryOffset = GeometryConversions.serialize(builder, geometry, geometryType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        builder.finish(gometryOffset);
-        byte[] bytes = builder.sizedByteArray();
-        ByteBuffer bb = ByteBuffer.wrap(bytes);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
-        return bb;
-//
-//        SimpleFeatureCollection fc =
-//            (SimpleFeatureCollection) featureCollection.getFeature().get(0);
-//        FeatureCollectionConversions.serialize(fc, 0, output);
+    public List<SimpleFeature> getSimpleFeatureListWithoutProperty() {
+        List<School> schoolList = schoolRepository.selectList();
+
+        return new ArrayList<>(
+                schoolList.stream().map(school -> {
+                    SimpleFeature simpleFeature;
+                    try {
+                        simpleFeature = school.convertToSimpleFeatureWithoutProperty();
+                    } catch (SchemaException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return simpleFeature;
+                }).toList()
+        );
     }
 
-    private File sample() {
-        File tmpFile = new File("springboot/tmp/polygons.fgb");
+    public List<SimpleFeature> getSimpleFeatureList() {
+        List<School> schoolList = schoolRepository.selectList();
 
+        return fromSchoolListToSimpleFeatureCollection(schoolList);
+    }
+
+    /**
+     * TODO: controllerで実装して動作確認までできたのは、地物1つをfgbにする実装
+     * 複数の地物を1つのfgbにするにはdataStoreを使って、fileを返す？
+     *
+     * @see https://docs.geotools.org/stable/userguide/tutorial/feature/csv2shp.html#:~:text=Write%20the%20feature%20data%20to%20the%20shapefile
+     */
+    public DefaultFeatureCollection getDefaultFeatureCollection() {
+        List<School> schoolList = schoolRepository.selectList();
+        List<SimpleFeature> simpleFeatureList =
+                fromSchoolListToSimpleFeatureCollection(schoolList);
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
+        featureCollection.addAll(simpleFeatureList);
+
+        return featureCollection;
+    }
+
+    private List<SimpleFeature> fromSchoolListToSimpleFeatureCollection(List<School> schoolList) {
+        return new ArrayList<>(
+                schoolList.stream().map(school -> {
+                    SimpleFeature simpleFeature = null;
+                    try {
+                        simpleFeature = school.convertToSimpleFeature();
+                    } catch (FactoryException e) {
+                        log.error("FactoryException が発生: ", e);
+                    }
+                    return simpleFeature;
+                }).toList()
+        );
+    }
+
+    public void writeFile(DefaultFeatureCollection featureCollection) throws IOException {
+        File file = new File("SchoolList" + LocalDateTime.now() + ".fgb");
+        Map<String, URL> map = new HashMap<>();
+        map.put("url", file.toURL());
+        FlatGeobufDataStoreFactory factory = new FlatGeobufDataStoreFactory();
+        DataStore dataStore = factory.createDataStore(map);
         try {
-            File file = File.createTempFile("hoge", "fuga", tmpFile);
-
-            Map<String, Serializable> params = new HashMap<>();
-//            URL url = tmpFile.toURI().toURL();
-            URL url = file.toURI().toURL();
-            params.put("url", url);
-            DataStore store = DataStoreFinder.getDataStore(params);
-
-            SimpleFeatureType featureType =
-                DataUtilities.createType("lines", "geom:Polygon,name:String,id:int");
-            store.createSchema(featureType);
-            SimpleFeatureStore featureStore =
-                (SimpleFeatureStore) store.getFeatureSource("polygons");
-            WKTReader reader = new WKTReader();
-
-            SimpleFeature feature1 = SimpleFeatureBuilder.build(
-                featureType,
-                new Object[]{
-                    reader.read(
-                        """
-                            POLYGON (
-                                (
-                                    59.0625 57.704147, 37.617187 24.527135, 
-                                    98.789062 36.031332, 59.062499 57.704147, 59.0625 57.704147
-                                )
-                            )
-                            """
-                    ),
-                    "ABC",
-                    1
-                },
-                "location.1"
-            );
-
-            SimpleFeatureCollection collection = DataUtilities.collection(feature1);
-            featureStore.addFeatures(collection);
-        } catch (IOException | SchemaException e) {
-            log.error("IOException | SchemaException エラー発生", e);
-        } catch (ParseException e) {
-            log.error("ParseException エラー発生", e);
+            dataStore.createSchema(School.generateSimpleFeatureType());
+        } catch (FactoryException e) {
+            log.error("FactoryException が発生: ", e);
         }
 
-        // TODO: 一時ファイルにfgb形式で出力して、そのバイナリファイルをresponseで返す？
-
-        return tmpFile;
+        String typeName = dataStore.getTypeNames()[0];
+        SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
+        if (featureSource instanceof FeatureStore) {
+            FeatureStore featureStore = (FeatureStore) featureSource;
+            Transaction transaction = new DefaultTransaction("create");
+            featureStore.setTransaction(transaction);
+            try {
+                featureStore.addFeatures(featureCollection);
+                transaction.commit();
+            } catch (Exception ex) {
+                java.util.logging.Logger.getGlobal().log(java.util.logging.Level.INFO, "", ex);
+                transaction.rollback();
+            } finally {
+                transaction.close();
+            }
+        }
+        FileOutputStream fos = new FileOutputStream(file);
+//        FeatureCollectionConversions.serialize(featureCollection, 0, fos);
+        fos.flush();
+        fos.close();
     }
 }

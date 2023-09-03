@@ -48,6 +48,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.wololo/flatgeobuf
 //    implementation group: 'org.wololo', name: 'flatgeobuf', version: '3.26.1'
+
+    // https://mvnrepository.com/artifact/org.geotools/gt-geojson
+//    implementation group: 'org.geotools', name: 'gt-geojson', version: '28.4'
+
+    // https://mvnrepository.com/artifact/org.geotools/gt-geojson-core
+    implementation group: 'org.geotools', name: 'gt-geojson-core', version: '29.2'
 }
 
 tasks.named('test') {
