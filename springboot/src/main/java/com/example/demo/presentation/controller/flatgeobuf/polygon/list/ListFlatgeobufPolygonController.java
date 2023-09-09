@@ -10,10 +10,12 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.flatgeobuf.FeatureCollectionConversions;
 import org.geotools.data.flatgeobuf.FlatGeobufWriter;
+import org.geotools.data.geojson.GeoJSONWriter;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.feature.simple.SimpleFeature;
@@ -80,11 +82,11 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/sample_list_3.fgb")
     public void sampleList3(HttpServletResponse response) throws FactoryException, IOException, URISyntaxException {
         Coordinate[] coordinates = new Coordinate[]{
-                new Coordinate(59.0625, 57.704147),
-                new Coordinate(37.617187, 24.527135),
-                new Coordinate(98.789062, 36.031332),
-                new Coordinate(59.062499, 57.704147),
-                new Coordinate(59.0625, 57.704147)
+            new Coordinate(59.0625, 57.704147),
+            new Coordinate(37.617187, 24.527135),
+            new Coordinate(98.789062, 36.031332),
+            new Coordinate(59.062499, 57.704147),
+            new Coordinate(59.0625, 57.704147)
         };
         final SimpleFeatureType simpleFeatureType = School.generateSimpleFeatureType();
         SimpleFeatureBuilder simpleFeatureBuilder1 = new SimpleFeatureBuilder(simpleFeatureType);
@@ -105,33 +107,32 @@ public class ListFlatgeobufPolygonController {
                 DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
                 featureCollection.add(simpleFeature);
                 FeatureCollectionConversions.serialize(
-                        featureCollection, 0, byteArrayOutputStream
+                    featureCollection, 0, byteArrayOutputStream
                 );
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
 //        sample_list_3.fgb
-//        byte[] bytes = byteArrayOutputStream.toByteArray();
-//        IOUtils.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        IOUtils.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
 
         // sample_list_3_1.fgb
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        IOUtils.copy(new ByteArrayInputStream(byteBuffer.array()), response.getOutputStream());
+//        byte[] bytes = byteArrayOutputStream.toByteArray();
+//        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+//        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+//        IOUtils.copy(new ByteArrayInputStream(byteBuffer.array()), response.getOutputStream());
 
         // deserializeして中身を見てみる
         // todo: polygon1つしか読み出せない
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteBuffer.array());
-        Iterable<SimpleFeature> simpleFeatureIterable =
-                FeatureCollectionConversions.deserialize(byteArrayInputStream);
-        List<SimpleFeature> simpleFeatureList1 = new ArrayList<>();
-        simpleFeatureIterable.forEach(
-                simpleFeatureList1::add
-        );
-        log.info(String.valueOf(simpleFeatureList1));
+//        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteBuffer.array());
+//        Iterable<SimpleFeature> simpleFeatureIterable =
+//                FeatureCollectionConversions.deserialize(byteArrayInputStream);
+//        List<SimpleFeature> simpleFeatureList1 = new ArrayList<>();
+//        simpleFeatureIterable.forEach(
+//                simpleFeatureList1::add
+//        );
+//        log.info(String.valueOf(simpleFeatureList1));
 
         response.flushBuffer();
     }
@@ -146,11 +147,11 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/sample_list_2.fgb")
     public void sampleList2(HttpServletResponse response) throws IOException, SchemaException, FactoryException {
         Coordinate[] coordinates = new Coordinate[]{
-                new Coordinate(59.0625, 57.704147),
-                new Coordinate(37.617187, 24.527135),
-                new Coordinate(98.789062, 36.031332),
-                new Coordinate(59.062499, 57.704147),
-                new Coordinate(59.0625, 57.704147)
+            new Coordinate(59.0625, 57.704147),
+            new Coordinate(37.617187, 24.527135),
+            new Coordinate(98.789062, 36.031332),
+            new Coordinate(59.062499, 57.704147),
+            new Coordinate(59.0625, 57.704147)
         };
         // todo: propertyをspecに指定するとdeserializeできない
 //        SimpleFeatureType simpleFeatureType = DataUtilities.createType(
@@ -195,18 +196,18 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/sample_3.fgb")
     public void sample3(HttpServletResponse response) throws SchemaException, IOException {
         Coordinate[] coordinates = new Coordinate[]{
-                new Coordinate(59.0625, 57.704147),
-                new Coordinate(37.617187, 24.527135),
-                new Coordinate(98.789062, 36.031332),
-                new Coordinate(59.062499, 57.704147),
-                new Coordinate(59.0625, 57.704147)
+            new Coordinate(59.0625, 57.704147),
+            new Coordinate(37.617187, 24.527135),
+            new Coordinate(98.789062, 36.031332),
+            new Coordinate(59.062499, 57.704147),
+            new Coordinate(59.0625, 57.704147)
         };
         SimpleFeatureType simpleFeatureType = DataUtilities.createType(
-                "Polygon",
-                "geometry:Geometry:srid=4326,hoge:java.lang.String"
+            "Polygon",
+            "geometry:Geometry:srid=4326,hoge:java.lang.String"
         );
         List<org.opengis.feature.type.AttributeDescriptor> attributeDescriptorList =
-                simpleFeatureType.getAttributeDescriptors();
+            simpleFeatureType.getAttributeDescriptors();
         Object[] defaults = new Object[attributeDescriptorList.size()];
         int p = 0;
         for (final AttributeDescriptor descriptor : attributeDescriptorList) {
@@ -214,7 +215,7 @@ public class ListFlatgeobufPolygonController {
         }
 
         SimpleFeature simpleFeature = SimpleFeatureBuilder.build(
-                simpleFeatureType, defaults, UUID.randomUUID().toString()
+            simpleFeatureType, defaults, UUID.randomUUID().toString()
         );
         simpleFeature.setAttribute("hoge", "fuga");
         GeometryFactory geometryFactory = new GeometryFactory();
@@ -242,7 +243,7 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/sample_2.fgb")
     public void sample2(HttpServletResponse response) throws IOException {
         List<SimpleFeature> simpleFeatureList =
-                listFlatGeobufPolygonUsecase.getSimpleFeatureListWithoutProperty();
+            listFlatGeobufPolygonUsecase.getSimpleFeatureListWithoutProperty();
         DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
         featureCollection.addAll(simpleFeatureList);
 
@@ -255,14 +256,85 @@ public class ListFlatgeobufPolygonController {
         response.flushBuffer();
     }
 
+    /**
+     * TODO: feature.properties 有りなので、javascriptでdeserializeできない
+     * @param response
+     * @throws IOException
+     * @throws FactoryException
+     */
+    @GetMapping("original_geojson_with_properties_java.fgb")
+    public void originalGeojsonWithPropertiesJava(HttpServletResponse response) throws IOException, FactoryException {
+        Coordinate[] coordinates = new Coordinate[]{
+            new Coordinate(139.7147, 36.1251),
+            new Coordinate(139.7146, 36.1252),
+            new Coordinate(139.7138, 36.126),
+            new Coordinate(139.7147, 36.1251),
+        };
+        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
+        simpleFeatureTypeBuilder.setName("school");
+        simpleFeatureTypeBuilder.setCRS(CRS.decode("EPSG:4326"));
+        simpleFeatureTypeBuilder.add("A27_001", String.class);
+        simpleFeatureTypeBuilder.add("location", org.locationtech.jts.geom.Polygon.class);
+        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+
+        SimpleFeatureBuilder simpleFeatureBuilder1 = new SimpleFeatureBuilder(simpleFeatureType);
+        simpleFeatureBuilder1.set("A27_001", "08542");
+        SimpleFeature simpleFeature1 = simpleFeatureBuilder1.buildFeature(null);
+        simpleFeature1.setDefaultGeometry(new GeometryFactory().createPolygon(coordinates));
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
+        featureCollection.add(simpleFeature1);
+        FeatureCollectionConversions.serialize(featureCollection, 0, byteArrayOutputStream);
+
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        IOUtils.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    /**
+     * NOTE: feature.properties 無しなので、javascriptでdeserializeできる
+     * @param response
+     * @throws IOException
+     * @throws FactoryException
+     */
+    @GetMapping("original_geojson_no_properties_java.fgb")
+    public void originalGeojsonNoPropertiesJava(HttpServletResponse response) throws IOException, FactoryException {
+        Coordinate[] coordinates = new Coordinate[]{
+            new Coordinate(139.7147, 36.1251),
+            new Coordinate(139.7146, 36.1252),
+            new Coordinate(139.7138, 36.126),
+            new Coordinate(139.7147, 36.1251),
+        };
+        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
+        simpleFeatureTypeBuilder.setName("school");
+        simpleFeatureTypeBuilder.setCRS(CRS.decode("EPSG:4326"));
+        simpleFeatureTypeBuilder.add("location", org.locationtech.jts.geom.Polygon.class);
+        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+
+        SimpleFeatureBuilder simpleFeatureBuilder1 = new SimpleFeatureBuilder(simpleFeatureType);
+        SimpleFeature simpleFeature1 = simpleFeatureBuilder1.buildFeature(null);
+        simpleFeature1.setDefaultGeometry(new GeometryFactory().createPolygon(coordinates));
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
+        featureCollection.add(simpleFeature1);
+        FeatureCollectionConversions.serialize(featureCollection, 0, byteArrayOutputStream);
+
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        IOUtils.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        response.flushBuffer();
+    }
+
+
     @GetMapping("/sample_1.fgb")
     public void sample1(HttpServletResponse response) throws IOException {
         Coordinate[] coordinates = new Coordinate[]{
-                new Coordinate(59.0625, 57.704147),
-                new Coordinate(37.617187, 24.527135),
-                new Coordinate(98.789062, 36.031332),
-                new Coordinate(59.062499, 57.704147),
-                new Coordinate(59.0625, 57.704147)
+            new Coordinate(59.0625, 57.704147),
+            new Coordinate(37.617187, 24.527135),
+            new Coordinate(98.789062, 36.031332),
+            new Coordinate(59.062499, 57.704147),
+            new Coordinate(59.0625, 57.704147)
         };
         // todo: builderを使うとdeserializeできない
         // todo: geometryがnullになる
@@ -296,15 +368,15 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/sample_list_1.fgb")
     public void sampleList1(HttpServletResponse response) throws IOException, SchemaException {
         Coordinate[] coordinates = new Coordinate[]{
-                new Coordinate(59.0625, 57.704147),
-                new Coordinate(37.617187, 24.527135),
-                new Coordinate(98.789062, 36.031332),
-                new Coordinate(59.062499, 57.704147),
-                new Coordinate(59.0625, 57.704147)
+            new Coordinate(59.0625, 57.704147),
+            new Coordinate(37.617187, 24.527135),
+            new Coordinate(98.789062, 36.031332),
+            new Coordinate(59.062499, 57.704147),
+            new Coordinate(59.0625, 57.704147)
         };
         // feature.propertiesなしならいけた
         SimpleFeatureType simpleFeatureType = DataUtilities.createType(
-                "Polygon", "geometry:Polygon"
+            "Polygon", "geometry:Polygon"
         );
         SimpleFeature simpleFeature1 = DataUtilities.template(simpleFeatureType);
         simpleFeature1.setDefaultGeometry(new GeometryFactory().createPolygon(coordinates));
@@ -326,7 +398,7 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/write_file.fgb")
     public void writeFile() throws IOException {
         DefaultFeatureCollection defaultFeatureCollection =
-                listFlatGeobufPolygonUsecase.getDefaultFeatureCollection();
+            listFlatGeobufPolygonUsecase.getDefaultFeatureCollection();
         // todo: fileに書き込めてない
         listFlatGeobufPolygonUsecase.writeFile(defaultFeatureCollection);
     }
@@ -334,12 +406,12 @@ public class ListFlatgeobufPolygonController {
     @GetMapping("/use_writer.fgb")
     public void useWriter(HttpServletResponse response) throws IOException, SchemaException {
         List<SimpleFeature> simpleFeatureList =
-                listFlatGeobufPolygonUsecase.getSimpleFeatureListWithoutProperty();
+            listFlatGeobufPolygonUsecase.getSimpleFeatureListWithoutProperty();
 
         OutputStream outputStream = response.getOutputStream();
         FlatGeobufWriter writer = new FlatGeobufWriter(outputStream, new FlatBufferBuilder());
         SimpleFeatureType simpleFeatureType =
-                DataUtilities.createType("Polygon", "geometry:Polygon");
+            DataUtilities.createType("Polygon", "geometry:Polygon");
         writer.writeFeatureType(simpleFeatureType);
 
         // todo: IOException が発生する
